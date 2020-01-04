@@ -16,6 +16,7 @@
 
 package com.zaxxer.hikari.metrics;
 
+//用于创建IMetricsTracker实例，并且按需记录PoolStats对象里的属性（这个对象里的属性就是类似连接池当前闲置连接数之类的线程池状态类指标）
 public interface MetricsTrackerFactory
 {
    /**
@@ -25,5 +26,6 @@ public interface MetricsTrackerFactory
     * @param poolStats a PoolStats instance to use
     * @return a IMetricsTracker implementation instance
     */
+   //返回一个IMetricsTracker对象，并且把PoolStats传了过去
    IMetricsTracker create(String poolName, PoolStats poolStats);
 }

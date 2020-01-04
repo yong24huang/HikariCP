@@ -75,7 +75,7 @@ class ProxyLeakTask implements Runnable
    public void run()
    {
       isLeaked = true;
-
+      //打印日志告警
       final StackTraceElement[] stackTrace = exception.getStackTrace(); 
       final StackTraceElement[] trace = new StackTraceElement[stackTrace.length - 5];
       System.arraycopy(stackTrace, 5, trace, 0, trace.length);
@@ -86,6 +86,7 @@ class ProxyLeakTask implements Runnable
 
    void cancel()
    {
+      //任务取消
       scheduledFuture.cancel(false);
       if (isLeaked) {
          LOGGER.info("Previously reported leaked connection {} on thread {} was returned to the pool (unleaked)", connectionName, threadName);

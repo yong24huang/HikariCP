@@ -21,12 +21,13 @@ package com.zaxxer.hikari.metrics;
  */
 public interface IMetricsTracker extends AutoCloseable
 {
+   //创建实际的物理连接时 用于记录一个实际的物理连接创建所耗费的时间
    default void recordConnectionCreatedMillis(long connectionCreatedMillis) {}
-
+   //getConnection时 用于记录获取一个连接时实际的耗时
    default void recordConnectionAcquiredNanos(final long elapsedAcquiredNanos) {}
-
+   //回收连接时 用于记录一个连接从被获取到被回收时所消耗的时间
    default void recordConnectionUsageMillis(final long elapsedBorrowedMillis) {}
-
+   //在getConnection时，用于记录获取连接超时的次数，每发生一次获取连接超时，就会触发一次该方法的调用
    default void recordConnectionTimeout() {}
 
    @Override

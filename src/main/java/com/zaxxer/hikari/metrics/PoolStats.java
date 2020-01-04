@@ -27,14 +27,20 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public abstract class PoolStats
 {
-   private final AtomicLong reloadAt;
-   private final long timeoutMs;
+   private final AtomicLong reloadAt; //触发下次刷新的时间（时间戳）
+   private final long timeoutMs; //刷新下面的各项属性值的频率，默认1s，无法改变
 
+   // 总连接数
    protected volatile int totalConnections;
+   // 闲置连接数
    protected volatile int idleConnections;
+   // 活动连接数
    protected volatile int activeConnections;
+   // 由于无法获取到可用连接而阻塞的业务线程数
    protected volatile int pendingThreads;
+   // 最大连接数
    protected volatile int maxConnections;
+   // 最小连接数
    protected volatile int minConnections;
 
    public PoolStats(final long timeoutMs)
@@ -88,8 +94,8 @@ public abstract class PoolStats
    }
 
    public int getMinConnections() {
-      if (shouldLoad()) {
-         update();
+      if (shouldLoad()) {//是否应该刷新
+         update(); //刷新属性值，注意这个update的实现在HikariPool里，因为这些属性值的直接或间接来源都是HikariPool
       }
 
       return minConnections;
@@ -97,6 +103,10 @@ public abstract class PoolStats
 
    protected abstract void update();
 
+   /**
+    * //按照更新频率来决定是否刷新属性值
+    * @return
+    */
    private boolean shouldLoad()
    {
       for (; ; ) {

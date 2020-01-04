@@ -75,7 +75,8 @@ public class PrometheusMetricsTrackerFactory implements MetricsTrackerFactory
    @Override
    public IMetricsTracker create(String poolName, PoolStats poolStats)
    {
-      registerCollector(this.collector, this.collectorRegistry);
+     registerCollector(this.collector, this.collectorRegistry);
+      //将接收到的PoolStats对象直接交给Collector，这样普罗米修斯服务端每触发一次采集接口的调用，PoolStats都会跟着执行一遍内部属性获取流程
       this.collector.add(poolName, poolStats);
       return new PrometheusMetricsTracker(poolName, this.collectorRegistry, this.collector);
    }

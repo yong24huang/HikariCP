@@ -37,6 +37,7 @@ class ProxyLeakTaskFactory
 
    ProxyLeakTask schedule(final PoolEntry poolEntry)
    {
+      //判断是否要新增任务
       return (leakDetectionThreshold == 0) ? ProxyLeakTask.NO_LEAK : scheduleNewTask(poolEntry);
    }
 

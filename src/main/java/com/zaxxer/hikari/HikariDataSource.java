@@ -42,8 +42,9 @@ public class HikariDataSource extends HikariConfig implements DataSource, Closea
    private static final Logger LOGGER = LoggerFactory.getLogger(HikariDataSource.class);
 
    private final AtomicBoolean isShutdown = new AtomicBoolean();
-
+   //通过传入的配置创建的实际连接池的对象引用
    private final HikariPool fastPathPool;
+   //通过自身的配置创建的实际连接池的对象引用
    private volatile HikariPool pool;
 
    /**
@@ -95,7 +96,7 @@ public class HikariDataSource extends HikariConfig implements DataSource, Closea
       if (isClosed()) {
          throw new SQLException("HikariDataSource " + this + " has been closed.");
       }
-
+      //如果初始化成功则直接从池中获取对象
       if (fastPathPool != null) {
          return fastPathPool.getConnection();
       }
@@ -106,10 +107,12 @@ public class HikariDataSource extends HikariConfig implements DataSource, Closea
          synchronized (this) {
             result = pool;
             if (result == null) {
-               validate();
+
+               validate();//校验配置，不通过抛异常
                LOGGER.info("{} - Starting...", getPoolName());
                try {
                   pool = result = new HikariPool(this);
+                  //标记初始化完成
                   this.seal();
                }
                catch (PoolInitializationException pie) {

@@ -151,11 +151,11 @@ abstract class PoolBase
             setNetworkTimeout(connection, validationTimeout);
 
             final int validationSeconds = (int) Math.max(1000L, validationTimeout) / 1000;
-
+            //是否启动jdbc4验证方式（实际上是执行驱动程序的isValid）
             if (isUseJdbc4Validation) {
                return connection.isValid(validationSeconds);
             }
-
+            //createStatement+excute方式校验连接
             try (Statement statement = connection.createStatement()) {
                if (isNetworkTimeoutSupported != TRUE) {
                   setQueryTimeout(statement, validationSeconds);
@@ -165,6 +165,7 @@ abstract class PoolBase
             }
          }
          finally {
+            //回设networkTimeout的值，因为ping方式是通过networkTimeout来判断超时的，上面被改成validationTimeout
             setNetworkTimeout(connection, networkTimeout);
 
             if (isIsolateInternalQueries && !isAutoCommit) {
